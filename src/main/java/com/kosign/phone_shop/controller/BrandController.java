@@ -28,6 +28,7 @@ public class BrandController {
 
 //        without use mapstruct
 //        Brand brand = Mapper.toBrand(brandDTO);
+//        brand = brandService.create(brand);
 
 //        using mapstruct
         Brand brand = BrandMapper.INSTANT.toBrand(brandDTO); //using mapstruct

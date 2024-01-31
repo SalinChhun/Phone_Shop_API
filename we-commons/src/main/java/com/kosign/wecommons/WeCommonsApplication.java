@@ -1,0 +1,13 @@
+package com.kosign.wecommons;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class WeCommonsApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(WeCommonsApplication.class, args);
+    }
+
+}

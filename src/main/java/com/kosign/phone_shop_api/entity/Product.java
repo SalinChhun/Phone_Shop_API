@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"model_id","color_id"})})
+@Table(name = "product_tb", uniqueConstraints = {@UniqueConstraint(columnNames = {"model_id","color_id"})})
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Product {
 

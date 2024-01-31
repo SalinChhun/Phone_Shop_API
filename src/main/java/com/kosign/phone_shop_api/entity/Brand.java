@@ -1,15 +1,13 @@
 package com.kosign.phone_shop_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(name = "brand_tb")
 public class Brand {
 
     @Id

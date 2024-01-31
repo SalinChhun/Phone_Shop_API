@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "product_image_tb")
 public class ProductImage {
 
     @Id

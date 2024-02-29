@@ -9,7 +9,11 @@ import java.math.BigDecimal;
 
 @Data
 @Entity
+<<<<<<< HEAD
 @NoArgsConstructor
+=======
+@Table(name = "sale_detail_tb")
+>>>>>>> 19e0b4cca41f163f29e51e26396bc65fd7f83c88
 public class SaleDetails {
 
     @Id

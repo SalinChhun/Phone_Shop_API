@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @NoArgsConstructor
+@Table(name = "product_imort_history_tb")
 public class ProductImportHistory {
 
     @Id

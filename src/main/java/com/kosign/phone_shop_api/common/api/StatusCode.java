@@ -14,11 +14,12 @@ public enum StatusCode {
     EMAIL_IS_NUll(404, "Email is null"),
     AUTHENTICATION_FAILED(453, "Authentication failed"),
     UNAUTHORIZED(401, "Unauthorized"),
-    PRODUCT_OUT_OF_STOCK(404, "This product is not available in stock"),
+    PRODUCT_OUT_OF_STOCK(404, "Product not enough in stock"),
     IMPORT_UNIT_MUST_GREATER_THAN_ZERO(404, "must greater than 0"),
     INVALID_PINCODE_FORMAT(404, "Pin code must be input only number 6 digit"),
     INVALID_PINCODE(404, "Invalid pin code"),
     EXPIRED_PINCODE(404, "PIN code has expired."),
+    CANCEL_SALE(404, "This sale is already cancel"),
     PINCODE_REQUIRED(404, "You need to verify pin code first");
 
     private final String message;

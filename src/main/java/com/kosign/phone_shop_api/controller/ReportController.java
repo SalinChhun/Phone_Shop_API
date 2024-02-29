@@ -3,10 +3,7 @@ package com.kosign.phone_shop_api.controller;
 import com.kosign.phone_shop_api.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -17,12 +14,11 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("getAllProductSold/{startDate}/{endDate}")
+    @GetMapping("getAllProductSold")
     ResponseEntity<?> getAllProductSold(
-            @PathVariable LocalDate startDate,
-            @PathVariable LocalDate endDate
+           @RequestParam(name = "sale_status", required = false, defaultValue = "true") Boolean saleStatus
     ) {
-        return ResponseEntity.ok(reportService.getProductSold(startDate, endDate));
+        return ResponseEntity.ok(reportService.getProductSold(saleStatus));
     }
 
     @GetMapping("expense/{startDate}/{endDate}")

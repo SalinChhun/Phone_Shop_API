@@ -9,10 +9,7 @@ import com.kosign.phone_shop_api.util.ModelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.web.servlet.function.ServerResponse.ok;
 
 @RequiredArgsConstructor
 @RestController

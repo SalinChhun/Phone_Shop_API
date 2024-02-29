@@ -19,7 +19,7 @@ public class SaleController extends PhoneShopResController{
         return ok();
     }
 
-    @PutMapping("cancelSale/{saleId}")
+    @PatchMapping("cancelSale/{saleId}")
     ResponseEntity<?> cancelSale(@PathVariable Integer saleId) {
         saleService.cancelSale(saleId);
         return ok();

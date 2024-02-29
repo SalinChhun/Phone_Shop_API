@@ -34,47 +34,84 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public void sale(SaleRequest saleRequest) {
 
-        //validation
-        List<Integer> productId = saleRequest.getProduct().stream()
-                .map(ProductSoldRequest::getProductId)
-                .toList();
-        //product validation
+//        //validation
+//        List<Integer> productId = saleRequest.getProduct().stream()
+//                .map(ProductSoldRequest::getProductId)
+//                .toList();
+//        //product validation
+//        productId.forEach(productService::getProductById);
+//        List<Product> products = productRepository.findAllById(productId);
+//        Map<Integer, Product> productMap = products.stream()
+//                .collect(Collectors.toMap(Product::getId, Function.identity()));
+//
+//        //stock validation
+//        saleRequest.getProduct()
+//                .forEach(ps -> {
+//                    Product product = productMap.get(ps.getProductId());
+//                    if (product.getAvailableUnit() < ps.getNumberOfUnit()) {
+//                        throw new BusinessException(StatusCode.PRODUCT_OUT_OF_STOCK);
+//                    }
+//                });
+//
+//        //save sale
+//        Sale sale = new Sale();
+//        sale.setSoldDate(saleRequest.getSaleDate());
+//        saleRepository.save(sale);
+//
+//        //save sale details
+//        saleRequest.getProduct()
+//                .forEach(ps -> {
+//                    Product product = productMap.get(ps.getProductId());
+//                    SaleDetails saleDetails = new SaleDetails();
+//                    saleDetails.setAmount(product.getSalePrice());
+//                    saleDetails.setProductId(product);
+//                    saleDetails.setSaleId(sale);
+//                    saleDetails.setUnit(ps.getNumberOfUnit());
+//                    saleDetailsRepository.save(saleDetails);
+//
+//                    //cut stock
+//                    Integer availableUnit = product.getAvailableUnit() - ps.getNumberOfUnit();
+//                    product.setAvailableUnit(availableUnit);
+//                    productRepository.save(product);
+//                });
+
+        // qty validation
+        List<Integer> productId = saleRequest.getProduct().stream().map(ProductSoldRequest::getProductId).toList();
         productId.forEach(productService::getProductById);
         List<Product> products = productRepository.findAllById(productId);
-        Map<Integer, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        //stock validation
+        // stock validation
         saleRequest.getProduct()
                 .forEach(ps -> {
-                    Product product = productMap.get(ps.getProductId());
-                    if(product.getAvailableUnit() < ps.getNumberOfUnit()) {
+                    Product product = productService.getProductById(ps.getProductId());
+                    if (product.getAvailableUnit() < ps.getNumberOfUnit()) {
                         throw new BusinessException(StatusCode.PRODUCT_OUT_OF_STOCK);
                     }
                 });
 
-        //save sale
+        // save sale
         Sale sale = new Sale();
+        sale.setStatus(true);
         sale.setSoldDate(saleRequest.getSaleDate());
         saleRepository.save(sale);
 
-        //save sale details
+        // save sale details
         saleRequest.getProduct()
                 .forEach(ps -> {
-                    Product product = productMap.get(ps.getProductId());
-                    SaleDetails saleDetails = new SaleDetails();
-                    saleDetails.setAmount(product.getSalePrice());
-                    saleDetails.setProductId(product);
-                    saleDetails.setSaleId(sale);
-                    saleDetails.setUnit(ps.getNumberOfUnit());
+                    Product product = productService.getProductById(ps.getProductId());
+                    SaleDetails saleDetails = SaleDetails.builder()
+                            .saleId(sale)
+                            .amount(product.getSalePrice())
+                            .unit(ps.getNumberOfUnit())
+                            .productId(product)
+                            .build();
                     saleDetailsRepository.save(saleDetails);
 
-                    //cut stock
-                    Integer availableUnit = product.getAvailableUnit() - ps.getNumberOfUnit();
-                    product.setAvailableUnit(availableUnit);
+                    // cut stock
+                    var cutStockUnit = product.getAvailableUnit() - ps.getNumberOfUnit();
+                    product.setAvailableUnit(cutStockUnit);
                     productRepository.save(product);
                 });
-
 
     }
 
@@ -87,24 +124,42 @@ public class SaleServiceImpl implements SaleService {
     public void cancelSale(Integer id) {
 
         //update sale status
-        Sale sale = getSaleById(id);
-        sale.setStatus(false);
-        saleRepository.save(sale);
+//        Sale sale = getSaleById(id);
+//        sale.setStatus(false);
+//        saleRepository.save(sale);
 
         //update stock
-        List<SaleDetails> saleDetails = saleDetailsRepository.findBySaleIdId(id);
-        List<Integer> productId = saleDetails.stream()
-                .map(sd -> sd.getProductId().getId())
-                .toList();
-        List<Product> products = productRepository.findAllById(productId);
-        Map<Integer, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getId, Function.identity()));
+//        List<SaleDetails> saleDetails = saleDetailsRepository.findBySaleIdId(id);
+//        List<Integer> productId = saleDetails.stream()
+//                .map(sd -> sd.getProductId().getId())
+//                .toList();
+//        List<Product> products = productRepository.findAllById(productId);
+//        Map<Integer, Product> productMap = products.stream()
+//                .collect(Collectors.toMap(Product::getId, Function.identity()));
+//
+//        saleDetails.forEach(sd -> {
+//            Product product = productMap.get(sd.getProductId().getId());
+//            product.setAvailableUnit(product.getAvailableUnit() + sd.getUnit());
+//            productRepository.save(product);
+//        });
 
-        saleDetails.forEach(sd -> {
-            Product product = productMap.get(sd.getProductId().getId());
-            product.setAvailableUnit(product.getAvailableUnit() + sd.getUnit());
-            productRepository.save(product);
-        });
+        Sale sale = getSaleById(id);
+        if (sale.getStatus()) {
+
+            sale.setStatus(false);
+            saleRepository.save(sale);
+
+            var saleDetails = saleDetailsRepository.findBySaleIdId(id);
+            saleDetails.forEach(sd -> {
+                Product product = productService.getProductById(sd.getProductId().getId());
+                product.setAvailableUnit(product.getAvailableUnit() + sd.getUnit());
+                productRepository.save(product);
+            });
+
+        } else {
+            throw new BusinessException(StatusCode.CANCEL_SALE);
+        }
+
     }
 
 //    private void validate(SaleRequest saleRequest) {

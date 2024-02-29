@@ -2,7 +2,9 @@ package com.kosign.phone_shop_api.serviceImpl;
 
 import com.kosign.phone_shop_api.entity.Product;
 import com.kosign.phone_shop_api.entity.ProductImportHistory;
+import com.kosign.phone_shop_api.payload.MultiSortBuilder;
 import com.kosign.phone_shop_api.payload.report.ExpenseReportRequest;
+import com.kosign.phone_shop_api.payload.report.ProductSoldCriteria;
 import com.kosign.phone_shop_api.projection.ProductSold;
 import com.kosign.phone_shop_api.repository.ProductImportRepository;
 import com.kosign.phone_shop_api.repository.ProductRepository;
@@ -11,6 +13,8 @@ import com.kosign.phone_shop_api.service.ReportService;
 import com.kosign.phone_shop_api.spec.ProductImportHistoryFilter;
 import com.kosign.phone_shop_api.spec.ProductImportHistorySpec;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,8 +34,16 @@ public class ReportServiceImpl implements ReportService {
     private final ProductImportRepository productImportRepository;
 
     @Override
-    public List<ProductSold> getProductSold(LocalDate startDate, LocalDate endDate) {
-        return saleRepository.findProductSold(startDate, endDate);
+    public List<ProductSold> getProductSold(Boolean saleStatus) {
+        return saleRepository.findProductSold(saleStatus);
+    }
+
+    @Override
+    public Object getProductSold(ProductSoldCriteria criteria) {
+
+        List<Sort.Order> sortBuilder = new MultiSortBuilder().with(criteria.getSortColumns()).build();
+        var pageable = PageRequest.of(criteria.getPageNumber(), criteria.getPageSize(), Sort.by(sortBuilder));
+        return null;
     }
 
     @Override

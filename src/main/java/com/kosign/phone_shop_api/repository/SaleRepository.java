@@ -11,14 +11,14 @@ import java.util.List;
 public interface SaleRepository extends JpaRepository<Sale, Integer> {
 
     @Query(value = """
-                SELECT p.id productId, p.product_name productName, SUM(sd.unit) unit, SUM(sd.unit * sd.amount) totalAmount
+                SELECT p.id productId, p.product_name productName, SUM(sd.unit) unit, SUM(sd.unit * sd.amount) totalAmount, s.sold_date
                 FROM sale_details sd
-                INNER JOIN sale s ON sd.sale_id = s.id
-                INNER JOIN product p ON p.id = sd.product_id
-                WHERE date(s.sold_date) >= :startDate AND date(s.sold_date) <= :endDate
-                GROUP BY p.id, p.product_name;
+                LEFT JOIN sale s ON sd.sale_id = s.id
+                LEFT JOIN product p ON p.id = sd.product_id
+                WHERE s.status = ?1
+                GROUP BY p.id, p.product_name, s.sold_date;
             """, nativeQuery = true)
-    List<ProductSold> findProductSold(LocalDate startDate, LocalDate endDate);
+    List<ProductSold> findProductSold(Boolean saleStatus);
 
 
 }

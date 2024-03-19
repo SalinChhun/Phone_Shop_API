@@ -2,11 +2,13 @@ package com.kosign.phone_shop_api.payload.product;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.kosign.phone_shop_api.entity.ProductImage;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,17 +18,17 @@ public class ProductResponse {
     private String productName;
     private Integer availableUnit;
     private BigDecimal salePrice;
-    private String imagePath;
+    private List<ProductImageResponse> productImages;
     private String modelName;
     private String colorName;
 
     @Builder
-    public ProductResponse(Integer productId, String productName, Integer availableUnit, BigDecimal salePrice, String imagePath, String modelName, String colorName) {
+    public ProductResponse(Integer productId, String productName, Integer availableUnit, BigDecimal salePrice, List<ProductImageResponse> productImages, String modelName, String colorName) {
         this.productId = productId;
         this.productName = productName;
         this.availableUnit = availableUnit;
         this.salePrice = salePrice;
-        this.imagePath = imagePath;
+        this.productImages = productImages;
         this.modelName = modelName;
         this.colorName = colorName;
     }

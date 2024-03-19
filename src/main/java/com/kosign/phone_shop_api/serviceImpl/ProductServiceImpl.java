@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,15 +57,25 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> allProduct = productRepository.findByOrderByIdDesc(pageable);
         List<ProductResponse> productResponse = allProduct.stream()
-                .map(product -> ProductResponse.builder()
-                        .productId(product.getId())
-                        .productName(product.getProductName())
-                        .salePrice(product.getSalePrice())
-                        .availableUnit(product.getAvailableUnit())
-//                        .imagePath(product.getImagePath())
-                        .colorName(product.getColorId().getColorName())
-                        .modelName(product.getModelId().getModelName())
-                        .build()).toList();
+                .map(product -> {
+                    List<ProductImageResponse> productImages = product.getImages().stream()
+                            .map(image -> ProductImageResponse
+                                    .builder()
+                                    .id(image.getId())
+                                    .image_url(image.getPhoto())
+                                    .build()
+                            ).collect(Collectors.toList());
+
+                    return ProductResponse.builder()
+                            .productId(product.getId())
+                            .productName(product.getProductName())
+                            .salePrice(product.getSalePrice())
+                            .availableUnit(product.getAvailableUnit())
+                            .productImages(productImages)
+                            .colorName(product.getColorId().getColorName())
+                            .modelName(product.getModelId().getModelName())
+                            .build();
+                }).toList();
 
         return ProductMainResponse.builder()
                 .products(productResponse)

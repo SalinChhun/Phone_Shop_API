@@ -44,6 +44,11 @@ public class ProductServiceImpl implements ProductService {
         Model model = modelService.getModelById(productRequest.getModelId());
         Color color = colorService.getColorById(productRequest.getColorId());
 
+        var checkProduct = productRepository.findByModelId_IdAndColorId_Id(productRequest.getModelId(), productRequest.getColorId());
+        if (checkProduct.isPresent()) {
+            throw new BusinessException(StatusCode.PRODUCT_ALREADY_EXIST);
+        }
+
         Product product = Product.builder()
                 .productName(model.getModelName() + " " + color.getColorName())
                 .modelId(model)

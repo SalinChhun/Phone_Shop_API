@@ -29,7 +29,7 @@ public class ModelController extends PhoneShopResController {
 
     @GetMapping("getAllModel")
     public ResponseEntity<?> getAllModel() {
-        return ResponseEntity.ok(modelService.getAllModel());
+        return ok(modelService.getAllModel());
     }
 
     @GetMapping("{id}")

@@ -20,6 +20,7 @@ public enum StatusCode {
     INVALID_PINCODE(404, "Invalid pin code"),
     EXPIRED_PINCODE(404, "PIN code has expired."),
     CANCEL_SALE(404, "This sale is already cancel"),
+    PRODUCT_ALREADY_EXIST(404, "This product is already exists"),
     PINCODE_REQUIRED(404, "You need to verify pin code first");
 
     private final String message;

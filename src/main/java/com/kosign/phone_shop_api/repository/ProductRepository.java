@@ -16,5 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     @Query("select p from Product p order by p.id DESC")
     Page<Product> findByOrderByIdDesc(Pageable pageable);
 
+    Optional<Product> findByModelId_IdAndColorId_Id(Integer modelId, Integer colorId);
+
 
 }

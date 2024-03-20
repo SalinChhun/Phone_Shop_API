@@ -8,6 +8,8 @@ import com.kosign.phone_shop_api.service.ColorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ColorServiceImpl implements ColorService {
@@ -26,5 +28,10 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public Color getColorById(Integer id) {
         return colorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Color.class, "id", id.toString()));
+    }
+
+    @Override
+    public List<Color> getAllColor() {
+        return colorRepository.findAll();
     }
 }

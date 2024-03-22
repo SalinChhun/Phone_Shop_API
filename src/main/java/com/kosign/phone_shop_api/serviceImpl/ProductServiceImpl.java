@@ -1,18 +1,16 @@
 package com.kosign.phone_shop_api.serviceImpl;
 
 import com.kosign.phone_shop_api.common.api.StatusCode;
+import com.kosign.phone_shop_api.entity.*;
 import com.kosign.phone_shop_api.entity.Color;
-import com.kosign.phone_shop_api.entity.Model;
-import com.kosign.phone_shop_api.entity.Product;
-import com.kosign.phone_shop_api.entity.ProductImportHistory;
 import com.kosign.phone_shop_api.exception.BusinessException;
 import com.kosign.phone_shop_api.exception.EntityNotFoundException;
 import com.kosign.phone_shop_api.payload.product.*;
+import com.kosign.phone_shop_api.payload.productImage.ProductImageRequest;
+import com.kosign.phone_shop_api.repository.ProductImageRepository;
 import com.kosign.phone_shop_api.repository.ProductImportRepository;
 import com.kosign.phone_shop_api.repository.ProductRepository;
-import com.kosign.phone_shop_api.service.ColorService;
-import com.kosign.phone_shop_api.service.ModelService;
-import com.kosign.phone_shop_api.service.ProductService;
+import com.kosign.phone_shop_api.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,23 +36,50 @@ public class ProductServiceImpl implements ProductService {
     private final ModelService modelService;
     private final ColorService colorService;
     private final ProductImportRepository productImportRepository;
+    private final NotificationService notificationService;
+    private final ProductImageRepository productImageRepository;
+
+
     @Override
     public void createNewProduct(ProductRequest productRequest) {
 
         Model model = modelService.getModelById(productRequest.getModelId());
         Color color = colorService.getColorById(productRequest.getColorId());
 
+
         var checkProduct = productRepository.findByModelId_IdAndColorId_Id(productRequest.getModelId(), productRequest.getColorId());
         if (checkProduct.isPresent()) {
             throw new BusinessException(StatusCode.PRODUCT_ALREADY_EXIST);
         }
 
+        // create product
         Product product = Product.builder()
                 .productName(model.getModelName() + " " + color.getColorName())
                 .modelId(model)
                 .colorId(color)
                 .build();
         productRepository.save(product);
+
+//        save product image
+        var productPhoto = productRequest.getProductImage();
+//        way 1
+//        for (ProductImageRequest pr: productPhoto) {
+//            var productImage = ProductImage
+//                            .builder()
+//                            .photo(pr.getPhoto())
+//                            .product(product)
+//                            .build();
+//            productImageRepository.save(productImage);
+//        }
+
+//       way 2
+        List<ProductImage> productImage = productPhoto.stream().map(p -> ProductImage.builder()
+                        .photo(p.getPhoto())
+                        .product(product)
+                        .build())
+                .toList();
+        productImageRepository.saveAll(productImage);
+
     }
 
     @Override
@@ -81,6 +106,10 @@ public class ProductServiceImpl implements ProductService {
                             .modelName(product.getModelId().getModelName())
                             .build();
                 }).toList();
+
+
+        // Test push notification
+        notificationService.pushNotification(1L, "you got notification");
 
         return ProductMainResponse.builder()
                 .products(productResponse)

@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u where u.isPinCodeEnable = ?1 and u.email = ?2")
     User findByIsPinCodeEnableAndEmail(Boolean isPinCodeEnable, String email);
+
+
 }

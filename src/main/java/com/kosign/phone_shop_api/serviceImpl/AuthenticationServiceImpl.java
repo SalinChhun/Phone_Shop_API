@@ -12,6 +12,7 @@ import com.kosign.phone_shop_api.security.config.JwtService;
 import com.kosign.phone_shop_api.security.token.Token;
 import com.kosign.phone_shop_api.security.token.TokenRepository;
 import com.kosign.phone_shop_api.security.token.TokenType;
+import com.kosign.phone_shop_api.security.user.Role;
 import com.kosign.phone_shop_api.service.AuthenticationService;
 import com.kosign.phone_shop_api.util.EmailUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -38,6 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     @Override
     public LoginResponse register(RegisterRequest request) {
@@ -100,6 +102,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    @Override
+    public LoginResponse thirdPartyLogin(LoginRequest request) {
+
+        var requestUser = userRepository.findByEmail(request.getEmail());
+
+        if (requestUser.isEmpty()) {
+            var user = User.builder()
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.USER)
+                    .build();
+            var savedUser = repository.save(user);
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
+            saveUserToken(savedUser, jwtToken);
+            return LoginResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } else {
+            return login(request);
+        }
     }
 
     @Override

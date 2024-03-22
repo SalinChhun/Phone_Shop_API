@@ -35,6 +35,13 @@ public class AuthenticationController extends PhoneShopResController {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
+    @PostMapping("/third-party/login")
+    public ResponseEntity<LoginResponse> thirdPartyAuthenticate(
+            @RequestBody LoginRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.thirdPartyLogin(request));
+    }
+
     @PostMapping("/refreshToken")
     public void refreshToken(
             HttpServletRequest request,

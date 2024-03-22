@@ -14,6 +14,8 @@ public interface AuthenticationService {
 
     public LoginResponse login(LoginRequest request);
 
+    public LoginResponse thirdPartyLogin(LoginRequest request);
+
     void saveUserToken(User user, String jwtToken);
 
     void revokeAllUserTokens(User user);

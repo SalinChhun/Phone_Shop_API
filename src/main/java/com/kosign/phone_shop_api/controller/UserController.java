@@ -53,12 +53,10 @@ public class UserController extends PhoneShopResController {
 
     @PutMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(
-            @RequestBody ResetPasswordRequest resetPasswordRequest,
-            Principal connectedUser
+            @RequestBody ResetPasswordRequest resetPasswordRequest
     ) {
-        userService.resetPassword(resetPasswordRequest, connectedUser);
+        userService.resetPassword(resetPasswordRequest);
         return ok();
     }
-
 
 }

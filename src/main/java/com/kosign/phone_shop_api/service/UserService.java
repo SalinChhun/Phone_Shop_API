@@ -17,7 +17,7 @@ public interface UserService {
 
     public void changePassword(ChangePasswordRequest request, Principal connectedUser);
 
-    void resetPassword(ResetPasswordRequest resetPasswordRequest, Principal connectedUser);
+    void resetPassword(ResetPasswordRequest resetPasswordRequest);
 
     AllUserResponse getUserDetailsByCurrentUser();
 

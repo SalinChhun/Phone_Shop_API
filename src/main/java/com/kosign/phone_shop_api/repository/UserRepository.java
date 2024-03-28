@@ -18,11 +18,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 //    void deleteUserById(@Param("userId") Integer userId);
 
 
+
     @Query("select u from User u order by u.id DESC")
     Page<User> getAllUser(Pageable pageable);
 
     @Query("select u from User u where u.isPinCodeEnable = ?1 and u.email = ?2")
     User findByIsPinCodeEnableAndEmail(Boolean isPinCodeEnable, String email);
 
+    User findUserByEmail(String email);
 
 }

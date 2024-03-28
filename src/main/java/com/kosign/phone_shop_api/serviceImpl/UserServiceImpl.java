@@ -88,9 +88,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void resetPassword(ResetPasswordRequest resetPasswordRequest, Principal connectedUser) {
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var user = userRepository.findUserByEmail(resetPasswordRequest.getEmail());
 
         // check if the two new passwords are the same
         if (!resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmNewPassword())) {

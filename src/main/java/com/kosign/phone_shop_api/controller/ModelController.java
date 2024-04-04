@@ -4,7 +4,7 @@ package com.kosign.phone_shop_api.controller;
 import com.kosign.phone_shop_api.dto.ModelDTO;
 import com.kosign.phone_shop_api.entity.Model;
 import com.kosign.phone_shop_api.payload.model.ModelRequest;
-import com.kosign.phone_shop_api.service.ModelService;
+import com.kosign.phone_shop_api.service.model.ModelService;
 import com.kosign.phone_shop_api.util.ModelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

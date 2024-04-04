@@ -4,7 +4,7 @@ import com.kosign.phone_shop_api.payload.MultiSortBuilder;
 import com.kosign.phone_shop_api.payload.product.ImportProductRequest;
 import com.kosign.phone_shop_api.payload.product.PriceRequest;
 import com.kosign.phone_shop_api.payload.product.ProductRequest;
-import com.kosign.phone_shop_api.service.ProductService;
+import com.kosign.phone_shop_api.service.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

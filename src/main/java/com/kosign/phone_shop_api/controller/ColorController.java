@@ -1,7 +1,7 @@
 package com.kosign.phone_shop_api.controller;
 
 import com.kosign.phone_shop_api.payload.color.ColorRequest;
-import com.kosign.phone_shop_api.service.ColorService;
+import com.kosign.phone_shop_api.service.color.ColorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

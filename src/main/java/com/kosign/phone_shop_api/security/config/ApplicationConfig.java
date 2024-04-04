@@ -1,6 +1,6 @@
 package com.kosign.phone_shop_api.security.config;
 
-import com.kosign.phone_shop_api.repository.UserRepository;
+import com.kosign.phone_shop_api.entity.user.UserRepository;
 import com.kosign.phone_shop_api.security.auditing.ApplicationAuditAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

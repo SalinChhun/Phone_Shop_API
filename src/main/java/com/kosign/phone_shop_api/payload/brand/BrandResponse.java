@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.kosign.phone_shop_api.common.api.Pagination;
-import com.kosign.phone_shop_api.entity.Brand;
+import com.kosign.phone_shop_api.entity.brand.Brand;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

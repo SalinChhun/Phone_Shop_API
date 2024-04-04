@@ -3,7 +3,7 @@ package com.kosign.phone_shop_api.controller;
 import com.kosign.phone_shop_api.payload.MultiSortBuilder;
 import com.kosign.phone_shop_api.payload.auth.ResetPasswordRequest;
 import com.kosign.phone_shop_api.payload.user.ChangePasswordRequest;
-import com.kosign.phone_shop_api.service.UserService;
+import com.kosign.phone_shop_api.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

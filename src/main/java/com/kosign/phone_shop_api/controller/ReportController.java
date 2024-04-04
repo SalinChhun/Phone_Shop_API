@@ -1,6 +1,6 @@
 package com.kosign.phone_shop_api.controller;
 
-import com.kosign.phone_shop_api.service.ReportService;
+import com.kosign.phone_shop_api.service.report.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

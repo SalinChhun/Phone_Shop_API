@@ -1,7 +1,7 @@
 package com.kosign.phone_shop_api.controller.auth;
 
 import com.kosign.phone_shop_api.controller.PhoneShopResController;
-import com.kosign.phone_shop_api.service.UserService;
+import com.kosign.phone_shop_api.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

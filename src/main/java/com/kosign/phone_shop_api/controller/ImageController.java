@@ -1,6 +1,6 @@
 package com.kosign.phone_shop_api.controller;
 
-import com.kosign.phone_shop_api.service.FileService;
+import com.kosign.phone_shop_api.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

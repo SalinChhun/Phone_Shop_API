@@ -1,6 +1,6 @@
 package com.kosign.phone_shop_api.security.auditing;
 
-import com.kosign.phone_shop_api.entity.User;
+import com.kosign.phone_shop_api.entity.user.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

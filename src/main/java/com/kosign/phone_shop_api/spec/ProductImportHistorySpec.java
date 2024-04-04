@@ -1,13 +1,11 @@
 package com.kosign.phone_shop_api.spec;
 
-import com.kosign.phone_shop_api.entity.ProductImportHistory;
+import com.kosign.phone_shop_api.entity.productHistory.ProductImportHistory;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;

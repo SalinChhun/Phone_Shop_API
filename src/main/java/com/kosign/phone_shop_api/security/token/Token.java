@@ -1,6 +1,6 @@
 package com.kosign.phone_shop_api.security.token;
 
-import com.kosign.phone_shop_api.entity.User;
+import com.kosign.phone_shop_api.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

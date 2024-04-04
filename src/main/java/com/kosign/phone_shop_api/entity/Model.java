@@ -1,5 +1,6 @@
 package com.kosign.phone_shop_api.entity;
 
+import com.kosign.phone_shop_api.entity.brand.Brand;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

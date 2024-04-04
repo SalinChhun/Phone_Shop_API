@@ -1,7 +1,7 @@
 package com.kosign.phone_shop_api.mapper;
 
 import com.kosign.phone_shop_api.dto.ModelDTO;
-import com.kosign.phone_shop_api.entity.Brand;
+import com.kosign.phone_shop_api.entity.brand.Brand;
 import com.kosign.phone_shop_api.entity.Model;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

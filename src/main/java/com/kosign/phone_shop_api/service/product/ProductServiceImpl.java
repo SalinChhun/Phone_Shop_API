@@ -1,36 +1,38 @@
 package com.kosign.phone_shop_api.service.product;
 
 import com.kosign.phone_shop_api.common.api.StatusCode;
-import com.kosign.phone_shop_api.entity.*;
+import com.kosign.phone_shop_api.entity.Model;
 import com.kosign.phone_shop_api.entity.color.Color;
 import com.kosign.phone_shop_api.entity.image.ProductImage;
+import com.kosign.phone_shop_api.entity.image.ProductImageRepository;
 import com.kosign.phone_shop_api.entity.product.Product;
+import com.kosign.phone_shop_api.entity.product.ProductRepository;
 import com.kosign.phone_shop_api.entity.productHistory.ProductImportHistory;
+import com.kosign.phone_shop_api.entity.productHistory.ProductImportRepository;
 import com.kosign.phone_shop_api.exception.BusinessException;
 import com.kosign.phone_shop_api.exception.EntityNotFoundException;
 import com.kosign.phone_shop_api.payload.product.*;
-import com.kosign.phone_shop_api.entity.image.ProductImageRepository;
-import com.kosign.phone_shop_api.entity.productHistory.ProductImportRepository;
-import com.kosign.phone_shop_api.entity.product.ProductRepository;
 import com.kosign.phone_shop_api.service.color.ColorService;
 import com.kosign.phone_shop_api.service.model.ModelService;
 import com.kosign.phone_shop_api.service.notification.NotificationService;
-import com.kosign.phone_shop_api.service.product.ProductService;
+import com.kosign.phone_shop_api.util.BaseSpecification;
+import com.kosign.phone_shop_api.util.MultiSortBuilder;
+import com.kosign.phone_shop_api.util.StringUtils;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,10 +90,38 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Object getAllProduct(Pageable pageable) {
+    public Object getAllProduct(ProductCriteria criteria) {
+        List<Sort.Order> sortBuilder = new MultiSortBuilder().with(criteria.getSortColumns()).build();
+        var pageable = PageRequest.of(criteria.getPageNumber(), criteria.getPageSize(), Sort.by(sortBuilder));
+        var products = productRepository.findAll((root, query, cb) -> {
+            var predicates = new ArrayList<Predicate>();
 
-        Page<Product> allProduct = productRepository.findByOrderByIdDesc(pageable);
-        List<ProductResponse> productResponse = allProduct.stream()
+            if (StringUtils.isNotBlank(criteria.getSearchValue())) {
+
+//                try {
+//                    var pd = NumberUtils.isDigits(criteria.getSearchValue()) ? cb.or(
+//                         cb.equal(root.get("salePrice"), criteria.getSearchValue())
+//                    ) : cb.and();
+//
+//                    predicates.add(cb.or(
+//                            cb.like(root.get("productName"), criteria.getSearchValue()),
+//                            cb.like(root.get("modelId"), criteria.getSearchValue()),
+//                            pd
+//                    ));
+//                } catch (ParseException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                var pd = NumberUtils.isDigits(criteria.getSearchValue()) ? cb.or(
+//                        cb.equal(root.get("salePrice"), criteria.getSearchValue())
+//                ) : cb.and();
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("productName")), BaseSpecification.containLowerCase(criteria.getSearchValue()))
+                ));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        }, pageable);
+
+        List<ProductResponse> productResponse = products.stream()
                 .map(product -> {
                     List<ProductImageResponse> productImages = product.getImages().stream()
                             .map(image -> ProductImageResponse
@@ -112,15 +142,47 @@ public class ProductServiceImpl implements ProductService {
                             .build();
                 }).toList();
 
-
-        // Test push notification
-        notificationService.pushNotification(1L, "you got notification");
-
         return ProductMainResponse.builder()
                 .products(productResponse)
-                .page(allProduct)
+                .page(products)
                 .build();
     }
+
+
+//    @Override
+//    public Object getAllProduct(Pageable pageable) {
+//
+//        Page<Product> allProduct = productRepository.findByOrderByIdDesc(pageable);
+//        List<ProductResponse> productResponse = allProduct.stream()
+//                .map(product -> {
+//                    List<ProductImageResponse> productImages = product.getImages().stream()
+//                            .map(image -> ProductImageResponse
+//                                    .builder()
+//                                    .id(image.getId())
+//                                    .image_url(image.getPhoto())
+//                                    .build()
+//                            ).collect(Collectors.toList());
+//
+//                    return ProductResponse.builder()
+//                            .productId(product.getId())
+//                            .productName(product.getProductName())
+//                            .salePrice(product.getSalePrice())
+//                            .availableUnit(product.getAvailableUnit())
+//                            .productImages(productImages)
+//                            .colorName(product.getColorId().getColorName())
+//                            .modelName(product.getModelId().getModelName())
+//                            .build();
+//                }).toList();
+//
+//
+//        // Test push notification
+//        notificationService.pushNotification(1L, "you got notification");
+//
+//        return ProductMainResponse.builder()
+//                .products(productResponse)
+//                .page(allProduct)
+//                .build();
+//    }
 
     @Override
     public Product getProductById(Integer id) {

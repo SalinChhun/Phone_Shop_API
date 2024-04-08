@@ -3,6 +3,7 @@ package com.kosign.phone_shop_api.controller;
 import com.kosign.phone_shop_api.payload.MultiSortBuilder;
 import com.kosign.phone_shop_api.payload.product.ImportProductRequest;
 import com.kosign.phone_shop_api.payload.product.PriceRequest;
+import com.kosign.phone_shop_api.payload.product.ProductCriteria;
 import com.kosign.phone_shop_api.payload.product.ProductRequest;
 import com.kosign.phone_shop_api.service.product.ProductService;
 import jakarta.validation.Valid;
@@ -33,12 +34,21 @@ public class ProductController extends PhoneShopResController{
     ResponseEntity<?> getAllProduct(
             @RequestParam(name = "page_number", defaultValue = "0") Integer pageNumber,
             @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
+            @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue,
             @RequestParam(value = "sort_column", required = false, defaultValue = "id:desc") String sortColumns
     ) {
-        List<Sort.Order> sortBuilder = new MultiSortBuilder().with(sortColumns).build();
-        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBuilder));
-        var product = productService.getAllProduct(pageRequest);
-        return ok(product);
+//        List<Sort.Order> sortBuilder = new MultiSortBuilder().with(sortColumns).build();
+//        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBuilder));
+        var criteria = ProductCriteria.builder()
+                .sortColumns(sortColumns)
+//                .startDate(startDate)
+//                .endDate(endDate)
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .searchValue(searchValue)
+                .build();
+
+        return ok(productService.getAllProduct(criteria));
     }
 
     @GetMapping("{id}")

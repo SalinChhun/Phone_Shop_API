@@ -43,6 +43,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation group: 'org.webjars', name: 'sockjs-client', version: '1.0.2'
+    implementation group: 'org.webjars', name: 'stomp-websocket', version: '2.3.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '3.2.1'
 }
 
 tasks.named('test') {

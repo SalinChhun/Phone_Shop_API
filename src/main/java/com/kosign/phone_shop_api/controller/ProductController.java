@@ -35,7 +35,7 @@ public class ProductController extends PhoneShopResController{
             @RequestParam(name = "page_number", defaultValue = "0") Integer pageNumber,
             @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
             @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue,
-            @RequestParam(value = "sort_column", required = false, defaultValue = "id:desc") String sortColumns
+            @RequestParam(value = "sort_columns", required = false, defaultValue = "id:desc") String sortColumns
     ) {
 //        List<Sort.Order> sortBuilder = new MultiSortBuilder().with(sortColumns).build();
 //        Pageable pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by(sortBuilder));

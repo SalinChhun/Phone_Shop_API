@@ -3,8 +3,10 @@ package com.kosign.phone_shop_api.service.product;
 import com.kosign.phone_shop_api.common.api.StatusCode;
 import com.kosign.phone_shop_api.entity.Model;
 import com.kosign.phone_shop_api.entity.color.Color;
+import com.kosign.phone_shop_api.entity.color.ColorRepository;
 import com.kosign.phone_shop_api.entity.image.ProductImage;
 import com.kosign.phone_shop_api.entity.image.ProductImageRepository;
+import com.kosign.phone_shop_api.entity.model.ModelRepository;
 import com.kosign.phone_shop_api.entity.product.Product;
 import com.kosign.phone_shop_api.entity.product.ProductRepository;
 import com.kosign.phone_shop_api.entity.productHistory.ProductImportHistory;
@@ -12,6 +14,7 @@ import com.kosign.phone_shop_api.entity.productHistory.ProductImportRepository;
 import com.kosign.phone_shop_api.exception.BusinessException;
 import com.kosign.phone_shop_api.exception.EntityNotFoundException;
 import com.kosign.phone_shop_api.payload.product.*;
+import com.kosign.phone_shop_api.payload.productImage.ProductImageRequest;
 import com.kosign.phone_shop_api.service.color.ColorService;
 import com.kosign.phone_shop_api.service.model.ModelService;
 import com.kosign.phone_shop_api.service.notification.NotificationService;
@@ -19,18 +22,18 @@ import com.kosign.phone_shop_api.util.BaseSpecification;
 import com.kosign.phone_shop_api.util.MultiSortBuilder;
 import com.kosign.phone_shop_api.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +48,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductImportRepository productImportRepository;
     private final NotificationService notificationService;
     private final ProductImageRepository productImageRepository;
-
+    private final JdbcTemplate jdbcTemplate;
+    private final ModelRepository modelRepository;
+    private final ColorRepository colorRepository;
 
     @Override
     public void createNewProduct(ProductRequest productRequest) {
@@ -87,6 +92,47 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
         productImageRepository.saveAll(productImage);
 
+    }
+
+    @Transactional
+    @Override
+    public void createMultiProducts(ProductsRequest products) {
+        System.err.println("products" + products.getProductRequests());
+
+        try {
+
+            for (ProductRequest product : products.getProductRequests()) {
+
+                var checkProduct = productRepository.findByModelId_IdAndColorId_Id(product.getModelId(), product.getColorId());
+                if (checkProduct.isPresent()) {
+                    throw new BusinessException(StatusCode.PRODUCT_ALREADY_EXIST);
+                }
+
+
+                var model = modelRepository.findById(product.getModelId()).orElseThrow(() -> new EntityNotFoundException(Model.class, "id", product.getModelId().toString()));
+                var color = colorRepository.findById(product.getColorId()).orElseThrow(() -> new EntityNotFoundException(Color.class, "id", product.getColorId().toString()));
+
+                // Perform the SQL insert
+                jdbcTemplate.update("INSERT INTO product_tb (model_id, color_id) VALUES (?, ?)",
+                        model.getId(), color.getId());
+
+                // Fetch the ID of the newly inserted product
+                Integer productId = jdbcTemplate.queryForObject("SELECT lastval()", Integer.class);
+
+                // Save product images
+                var productPhotos = product.getProductImage();
+                System.err.println("productPhotos"+ productPhotos);
+
+                for (ProductImageRequest pr : productPhotos) {
+                    jdbcTemplate.update("INSERT INTO product_image_tb (photo, product_id) VALUES (?, ?)",
+                            pr.getPhoto(), productId
+                    );
+                }
+            }
+        } catch (Exception e) {
+            // Handle the exception
+            e.printStackTrace();
+        }
     }
 
     @Override

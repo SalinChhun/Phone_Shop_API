@@ -1,10 +1,8 @@
 package com.kosign.phone_shop_api.controller;
 
+import com.kosign.phone_shop_api.entity.product.Product;
 import com.kosign.phone_shop_api.payload.MultiSortBuilder;
-import com.kosign.phone_shop_api.payload.product.ImportProductRequest;
-import com.kosign.phone_shop_api.payload.product.PriceRequest;
-import com.kosign.phone_shop_api.payload.product.ProductCriteria;
-import com.kosign.phone_shop_api.payload.product.ProductRequest;
+import com.kosign.phone_shop_api.payload.product.*;
 import com.kosign.phone_shop_api.service.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,12 @@ public class ProductController extends PhoneShopResController{
     @PostMapping("createNewProduct")
     ResponseEntity<?> createNewProduct(@RequestBody ProductRequest productRequest) {
         productService.createNewProduct(productRequest);
+        return ok();
+    }
+
+    @PostMapping("createMultiProducts")
+    ResponseEntity<?> saveProduct(@RequestBody ProductsRequest products) {
+        productService.createMultiProducts(products);
         return ok();
     }
 

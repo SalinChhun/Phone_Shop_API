@@ -1,20 +1,22 @@
 package com.kosign.phone_shop_api.controller;
 
 import com.kosign.phone_shop_api.entity.chat.Message;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kosign.phone_shop_api.entity.user.User;
+import com.kosign.phone_shop_api.entity.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 public class ChatController {
 
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final UserRepository userRepository;
 
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
@@ -28,4 +30,16 @@ public class ChatController {
         System.out.println(message.toString());
         return message;
     }
+
+//    @MessageMapping("/join")
+//    @SendTo("/chatroom/public")
+//    public Message join(@Payload Message message) {
+//
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        Integer userId = user.getId();
+//
+//        user.setFirstname(message.getReceiverName());
+//        userRepository.save(user);
+//        return message;
+//    }
 }

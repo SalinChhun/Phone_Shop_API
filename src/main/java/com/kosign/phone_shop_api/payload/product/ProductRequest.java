@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.kosign.phone_shop_api.payload.productImage.ProductImageRequest;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 @Data
 @JsonInclude
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@ToString
 public class ProductRequest {
 
     private Integer modelId;
